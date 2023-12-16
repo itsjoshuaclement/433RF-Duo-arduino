@@ -1,4 +1,4 @@
-# FunWave-433-Duo
+# 433RF-Duo-arduino
 Code for a 433MHz RF Wireless Transmitter and Receiver module.
 I had a lot of issues trying to find help when I was first learning about these devices. 
 This code specifically controls the position of a partial rotational servo by measuring 
