@@ -1,4 +1,4 @@
-# 433RF-Duo-arduino
+# 433RF-Duo-Arduino
 Code for a 433MHz RF Wireless Transmitter and Receiver module.
 I had a lot of issues trying to find help when I was first learning about these devices. 
 This code specifically controls the position of a partial rotational servo by measuring 
@@ -9,3 +9,70 @@ https://www.amazon.com/Wireless-Transmitter-Receiver-Arduino-Raspberry/dp/B08TMK
 
 and for the library to learn more please read: 
 https://www.arduino.cc/reference/en/libraries/rc-switch/
+
+# Code Explanation
+### Transmitter code:
+```
+#include <RCSwitch.h>
+```
+RCSwitch library, which is commonly used for controlling RF devices such as remote switches.
+```
+RCSwitch mySwitch = RCSwitch();
+```
+Declares an object named ```mySwitch``` of the class ```RCSwitch```. This object will be used to interact with the RF transmitter.
+```
+void setup() {
+  Serial.begin(9600);
+  mySwitch.enableTransmit(10);
+}
+```
+The ```setup()``` function is a standard Arduino function that is executed once when the microcontroller is powered on or reset.
+```Serial.begin(9600)``` initializes serial communication at a baud rate of 9600. This is useful for debugging and printing messages to the serial monitor in the Arduino IDE.
+```mySwitch.enableTransmit(10)``` configures the ```mySwitch``` object to use pin 10 as the transmitter pin. The RF transmitter is connected to this pin.
+```
+void loop() {
+  int value = analogRead(A1);
+  value = map(value, 0, 1024, 0, 180);
+  mySwitch.send(value, 30);
+}
+```
+```loop()``` function is another standard Arduino function that runs continuously after the ```setup()``` function.
+
+```int value = analogRead(A1);``` reads the analog voltage from pin A1. In this case a potentiometer, but could be anything like another sensor producing an analog signal.
+```value = map(value, 0, 1024, 0, 180);``` maps the analog input value (ranging from 0 to 1023) to a new value ranging from 0 to 180. This is often done to convert a sensor reading to a range suitable for a specific application. As in this application, we are using a partial rotational servo. Which only goes 0 degrees to 180 degrees.
+```mySwitch.send(value, 30);``` sends the mapped value (between 0 and 180) using the RCSwitch library. The second parameter, 30, represents the number of bits to send. This may need adjustment based on the requirements of the RF receiver. For my purposes, 30 worked well but each person's mileage may vary.
+
+### Receiver code:
+```
+#include <Servo.h>
+#include <RCSwitch.h>
+```
+Here are the necessary libraries. The ```Servo.h``` library is used for controlling servo motors, and ```RCSwitch.h``` is used for working with RF communication.
+```
+Servo servo;
+RCSwitch mySwitch = RCSwitch();
+```
+These lines declare two objects: ```servo``` of the Servo class, which will be used to control the servo motor, and ```mySwitch``` of the RCSwitch class, which will be used to receive RF signals.
+```
+void setup() {
+  Serial.begin(9600);
+  mySwitch.enableReceive(0);
+  servo.attach(3);
+}
+```
+```Serial.begin(9600);``` initializes serial communication at a baud rate of 9600. This is used for debugging and sending messages to the serial monitor.
+```mySwitch.enableReceive(0);``` configures the mySwitch object to enable RF signal reception on pin 0. The RF receiver is connected to this pin.
+```servo.attach(3);``` attaches the servo motor to pin 3. The servo control signal will be sent to this pin.
+```
+void loop() {
+  if (mySwitch.available()) {
+    Serial.println(mySwitch.getReceivedValue());
+    servo.write(mySwitch.getReceivedValue());
+    mySwitch.resetAvailable();
+  }
+}
+```
+```if (mySwitch.available()) {``` checks if there is a valid RF signal available.
+```Serial.println(mySwitch.getReceivedValue());``` prints the received value to the serial monitor. This is useful for debugging and understanding the values received from the RF transmitter.
+```servo.write(mySwitch.getReceivedValue());``` sets the position of the servo motor based on the received value. The ```getReceivedValue()``` function retrieves the value received by the RF receiver, and it is assumed to represent the desired position of the servo motor.
+```mySwitch.resetAvailable();``` resets the availability of the RF receiver, indicating that the signal has been processed.
