@@ -15,11 +15,11 @@ https://www.arduino.cc/reference/en/libraries/rc-switch/
 ```ino
 #include <RCSwitch.h>
 ```
-RCSwitch library, which is commonly used for controlling RF devices such as remote switches.
+Here is where we include the RCSwitch library. A library in the case of INO and CPP and many other coding languages, stores a series of predefined functions. In this case, the library is used for controlling RF devices.
 ```ino
 RCSwitch mySwitch = RCSwitch();
 ```
-Declares an object named ```mySwitch``` of the class ```RCSwitch```. This object will be used to interact with the RF transmitter.
+This is where we declare an object that is named ```mySwitch``` under the class ```RCSwitch```, if you want to use an object in your code you must declare it first. This object will be used to interact with our RF transmitter.
 ```ino
 void setup() {
   Serial.begin(9600);
@@ -27,8 +27,8 @@ void setup() {
 }
 ```
 The ```setup()``` function is a standard Arduino function that is executed once when the microcontroller is powered on or reset.
-```Serial.begin(9600)``` initializes serial communication at a baud rate of 9600. This is useful for debugging and printing messages to the serial monitor in the Arduino IDE.
-```mySwitch.enableTransmit(10)``` configures the ```mySwitch``` object to use pin 10 as the transmitter pin. The RF transmitter is connected to this pin.
+```Serial.begin(9600)``` initializes serial communication at a baud rate of 9600. This is useful for debugging and printing messages to the serial monitor in the Arduino IDE, technically this is a redundant line of code, but it is extremely useful if you're wondering why nothing is happening.
+```mySwitch.enableTransmit(10)``` configures the ```mySwitch``` object to use pin 10 as the transmitter pin. The RF transmitter is connected to this pin. ```.enableTransmit(...)``` is another ```RCSwitch``` function that is imported with the library.
 ```ino
 void loop() {
   int value = analogRead(A1);
