@@ -12,15 +12,15 @@ https://www.arduino.cc/reference/en/libraries/rc-switch/
 
 # Code Explanation
 ### Transmitter code:
-```
+```ino
 #include <RCSwitch.h>
 ```
 RCSwitch library, which is commonly used for controlling RF devices such as remote switches.
-```
+```ino
 RCSwitch mySwitch = RCSwitch();
 ```
 Declares an object named ```mySwitch``` of the class ```RCSwitch```. This object will be used to interact with the RF transmitter.
-```
+```ino
 void setup() {
   Serial.begin(9600);
   mySwitch.enableTransmit(10);
@@ -29,7 +29,7 @@ void setup() {
 The ```setup()``` function is a standard Arduino function that is executed once when the microcontroller is powered on or reset.
 ```Serial.begin(9600)``` initializes serial communication at a baud rate of 9600. This is useful for debugging and printing messages to the serial monitor in the Arduino IDE.
 ```mySwitch.enableTransmit(10)``` configures the ```mySwitch``` object to use pin 10 as the transmitter pin. The RF transmitter is connected to this pin.
-```
+```ino
 void loop() {
   int value = analogRead(A1);
   value = map(value, 0, 1024, 0, 180);
@@ -43,17 +43,17 @@ void loop() {
 ```mySwitch.send(value, 30);``` sends the mapped value (between 0 and 180) using the RCSwitch library. The second parameter, 30, represents the number of bits to send. This may need adjustment based on the requirements of the RF receiver. For my purposes, 30 worked well but each person's mileage may vary.
 
 ### Receiver code:
-```
+```ino
 #include <Servo.h>
 #include <RCSwitch.h>
 ```
 Here are the necessary libraries. The ```Servo.h``` library is used for controlling servo motors, and ```RCSwitch.h``` is used for working with RF communication.
-```
+```ino
 Servo servo;
 RCSwitch mySwitch = RCSwitch();
 ```
 These lines declare two objects: ```servo``` of the Servo class, which will be used to control the servo motor, and ```mySwitch``` of the RCSwitch class, which will be used to receive RF signals.
-```
+```ino
 void setup() {
   Serial.begin(9600);
   mySwitch.enableReceive(0);
@@ -63,7 +63,7 @@ void setup() {
 ```Serial.begin(9600);``` initializes serial communication at a baud rate of 9600. This is used for debugging and sending messages to the serial monitor.
 ```mySwitch.enableReceive(0);``` configures the mySwitch object to enable RF signal reception on pin 0. The RF receiver is connected to this pin.
 ```servo.attach(3);``` attaches the servo motor to pin 3. The servo control signal will be sent to this pin.
-```
+```ino
 void loop() {
   if (mySwitch.available()) {
     Serial.println(mySwitch.getReceivedValue());
